@@ -10,7 +10,7 @@ Test du matériel à disposition
 
 https://www.lextronic.fr/shield-arm-n8-lorawan-pour-raspberry-17349.html
 
-~~Voir le contrôle des modules par commandes AT (15/02/2021 21:27)
+~~Voir le contrôle des modules par commandes AT (15/02/2021 21:27)~~
 
 
 
