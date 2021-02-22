@@ -37,6 +37,9 @@ Le module est un ARM-N8-LW et non un ARM-N8-LWR !
 Ceci dit, il implémente des commandes compatibles avec le ARM-N8-LWR
 
 
-à voir si ilest possible d'en tirer quelque chose(car le module est obsolète, difficile de trouver une doc à jour !)
+~~à voir si ilest possible d'en tirer quelque chose(car le module est obsolète, difficile de trouver une doc à jour !)~~
 
 https://yadom.fr/media/product-attachment//home/magento///File-1574072753.pdf
+
+
+EDIT (18:54) : Problème avec les modules ARM-N8-LW ! Les commandes AT (ATM et ATO) répondent correctement, l'écriture du buffer de la RAM à l'EEPROM pour les registres ATM et ATO se fait correctement également, mais l'envoi des trames via la modulation de fréquence ne fait pas. Donc aucune communication n'est donc possible via le RF Bridge(voir Mode Normal de la datasheet p.21 du lien juste au dessus). J'ai essayé donc toute les transmission possibles pour les 2 Modules, soit la transmission LoRa ou FSK en local, soit en LoRaWan via le réseau(sachant qu'il faut passer par un gateway, ce qui ne serait pas intéressant du au temps de transmission). De plus l'utiliser sur Sigfox n'est pas intéressant, il faut apparemment un abonnement pour pouvoir transmettre. Il serait préférable d'utiliser un autre module LoRa, à regarder de près pour la compatibilité Arduino/RPI : https://www.adafruit.com/product/3072
