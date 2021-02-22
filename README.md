@@ -27,3 +27,16 @@ Il également spécifié que ce module à un mode bridge qui serait intéressant
 Prochaine étape à réaliser :
 
 Paramétrer les modules en fonction des commandes AT(p.18 ~ p.20), et vérifier si la communication se réalise correctent entre 2 modules.
+
+
+__Rapport 22/02/2021__
+
+
+Le module est un ARM-N8-LW et non un ARM-N8-LWR !
+
+Ceci dit, il implémente des commandes compatibles avec le ARM-N8-LWR
+
+
+à voir si ilest possible d'en tirer quelque chose(car le module est obsolète, difficile de trouver une doc à jour !)
+
+https://yadom.fr/media/product-attachment//home/magento///File-1574072753.pdf
