@@ -43,3 +43,16 @@ https://yadom.fr/media/product-attachment//home/magento///File-1574072753.pdf
 
 
 EDIT (18:54) : Problème avec les modules ARM-N8-LW ! Les commandes AT (ATM et ATO) répondent correctement, l'écriture du buffer de la RAM à l'EEPROM pour les registres ATM et ATO se fait correctement également, mais l'envoi des trames via la modulation de fréquence ne se fait pas. Donc aucune communication n'est donc possible via le RF Bridge(voir Mode Normal de la datasheet p.21 du lien juste au dessus). J'ai essayé donc toute les transmission possibles pour les 2 Modules, soit la transmission LoRa ou FSK en local, soit en LoRaWan via le réseau(sachant qu'il faut passer par un gateway, ce qui ne serait pas intéressant du au temps de transmission). De plus l'utiliser sur Sigfox n'est pas intéressant, il faut apparemment un abonnement pour pouvoir transmettre. Il serait préférable d'utiliser un autre module LoRa, à regarder de près pour la compatibilité Arduino/RPI : https://www.adafruit.com/product/3072
+
+
+
+__Rapport 23/02/2021__
+
+
+Premier tests de la RPI 3 :
+
+-RPI 3 ok
+-Ecran 3.5" GPIO ok
+
+
+Intégration d'un code test Python pour l'affichage de l'IHM
