@@ -56,3 +56,5 @@ Premier tests de la RPI 3 :
 
 
 Intégration d'un code test Python pour l'affichage de l'IHM
+
+Lien pour l'encodeur grove: https://www.lextronic.fr/module-grove-encodeur-rotatif-17275.html
