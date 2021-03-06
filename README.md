@@ -58,3 +58,16 @@ Premier tests de la RPI 3 :
 Intégration d'un code test Python pour l'affichage de l'IHM
 
 Lien pour l'encodeur grove: https://www.lextronic.fr/module-grove-encodeur-rotatif-17275.html
+
+
+__Rapport 06/03/2021__
+
+Update du script python:
+
+-Séquence boot
+-Peut lire des fichier textes(intéressant pour lire la base de donnée)
+-Affiche la date et l'heure en temps réel
+-Affiche la température et l'humidité en fonction de la ruche correspondante
+
+
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/demo.png?raw=true)
