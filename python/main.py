@@ -49,6 +49,61 @@ def setButton(posBX, posBY, width, height, pic):
 
 def fillScreen(arg):
     pygame.draw.rect(screen,arg, ([0,0],[720,480]))
+    
+    
+    
+    
+#This is the ultimate god power tool. His name ? The Parser
+def parseData(index_line):
+    
+    PARAM_R = ""
+    PARAM_D = ""
+    PARAM_T = ""
+    PARAM_H = ""
+    index_chr = 0
+    state_chr = 0
+
+    for index_chr in range(len(index_line)):
+    
+        #####################################
+        #Character mode reading
+        if(index_line[index_chr] == "R"):
+            state_chr = 1
+    
+        elif(index_line[index_chr] == "D"):
+            state_chr = 2
+    
+        elif(index_line[index_chr] == "T"):
+            state_chr = 3
+    
+        elif(index_line[index_chr] == "H"):
+            state_chr = 4
+    
+        elif(index_line[index_chr] == " "):
+            state_chr = 0
+        
+        elif(index_line[index_chr] == "0" or index_line[index_chr] == "1" or index_line[index_chr] == "2" or
+            index_line[index_chr] == "3" or index_line[index_chr] == "4" or index_line[index_chr] == "5" or
+            index_line[index_chr] == "6" or index_line[index_chr] == "7" or index_line[index_chr] == "8" or
+            index_line[index_chr] == "9" or index_line[index_chr] == "."):
+            #####################################
+            #Value reading
+        
+            if(state_chr == 1):
+                PARAM_R = PARAM_R + str(index_line[index_chr])
+            
+            elif(state_chr == 2):
+                PARAM_D = PARAM_D + str(index_line[index_chr])
+        
+            elif(state_chr == 3):
+                PARAM_T = PARAM_T + str(index_line[index_chr])
+            
+            elif(state_chr == 4):
+                PARAM_H = PARAM_H + str(index_line[index_chr])
+    return (int(PARAM_R), int(PARAM_D), float(PARAM_T), int(PARAM_H))            
+    
+
+
 
 
 #######################################################################################
@@ -165,6 +220,36 @@ if (SKIP_BOOT_SEQUENCE == False):
 
 
 
+##################################################
+#Load database
+
+tempStr = ""
+
+file = open("data/Y2021M03.txt", "r+")
+tempStr = file.readlines()
+file.close()
+
+#index_line = tempStr[0]
+
+R_DATA = 0
+D_DATA = 0
+T_DATA = .0
+H_DATA = 0
+    
+(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[0])
+tempData[R_DATA-1] = T_DATA
+humData[R_DATA-1] = H_DATA
+
+(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[1])
+tempData[R_DATA-1] = T_DATA
+humData[R_DATA-1] = H_DATA
+
+#debug my god function
+#print((R_DATA,D_DATA,T_DATA,H_DATA))
+
+
+
+
 while loop == True:
     ######################################################
     #Routines part
@@ -264,14 +349,14 @@ while loop == True:
     #######################################################
     #Debug values
     
-    tempData[0] = 11
-    tempData[1] = 32
+    #tempData[0] = 11
+    #tempData[1] = 32
     tempData[2] = 17
     tempData[3] = 20
     tempData[4] = 25
     
-    humData[0] = 25
-    humData[1] = 28
+    #humData[0] = 25
+    #humData[1] = 28
     humData[2] = 93
     humData[3] = 100
     humData[4] = 4
