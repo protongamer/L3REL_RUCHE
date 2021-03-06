@@ -70,4 +70,7 @@ Update du script python:
 -Affiche la température et l'humidité en fonction de la ruche correspondante
 
 
+EDIT : Intégration du parseur → fait
+
+
 ![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/demo.png?raw=true)
