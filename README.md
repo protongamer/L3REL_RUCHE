@@ -80,6 +80,9 @@ EDIT : Intégration du parseur → fait
 __Rapport 07/03/2021__
 
 
-Réalisation du Diagramme des Objectifs du projet
+Réalisation de l'analyse fonctionnelle
 
 ![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/Diagramme_Ruche.png?raw=true)
+
+
+Réalisation du cahier des charges
