@@ -1,3 +1,4 @@
+#Written by Enzo N. - 2021
 #That Code is OpenIoB (internet of bee)
 #Alpha v0.3
 
@@ -191,6 +192,7 @@ but3 = pygame.image.load('pic/prev.bmp')
 but4 = pygame.image.load('pic/setup.bmp')
 but5 = pygame.image.load('pic/button.bmp')
 window = pygame.image.load('pic/window.bmp')
+graph = pygame.image.load('pic/graph.bmp')
 
 
 #################################################################
@@ -270,6 +272,8 @@ while loop == True:
     screen.blit(temp, (0,142))
     screen.blit(hum, (0,260))
     screen.blit(window, (225,20))
+    screen.blit(graph, (280,142))
+    screen.blit(graph, (280,280))
     #Text part
     
     displayTemp = font.render(StrTemp, True, (255,255,255))
