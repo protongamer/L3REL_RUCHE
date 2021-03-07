@@ -73,4 +73,4 @@ Update du script python:
 EDIT : Intégration du parseur → fait
 
 
-![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/demo.png?raw=true)
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/demo.png?raw=true)
