@@ -74,3 +74,12 @@ EDIT : Intégration du parseur → fait
 
 
 ![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/demo.png?raw=true)
+
+
+
+__Rapport 07/03/2021__
+
+
+Réalisation du Diagramme des Objectifs du projet
+
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/Diagramme_Ruche.png?raw=true)
