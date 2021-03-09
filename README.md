@@ -86,3 +86,12 @@ Réalisation de l'analyse fonctionnelle
 
 
 Réalisation du cahier des charges
+
+
+__Rapport 09/03/2021__
+
+Solution pour la page web: p5.js
+
+→ établir un serveur local
+
+https://github.com/processing/p5.js/wiki/Local-server
