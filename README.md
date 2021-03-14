@@ -95,3 +95,12 @@ Solution pour la page web: p5.js
 → établir un serveur local
 
 https://github.com/processing/p5.js/wiki/Local-server
+
+
+
+
+__Rapport 14/03/2021__
+
+Intégration de la page web fait !
+
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/screen_openiob.png?raw=true)
