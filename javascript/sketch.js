@@ -19,6 +19,8 @@ const b_mNext = 3;
 const b_mPrev = 4;
 const b_loadData = 5;
 const b_lNext = 6;
+const b_hNext = 7;
+const b_hPrev = 8;
 
 
 ////////////////////////////
@@ -26,6 +28,7 @@ const b_lNext = 6;
 
 let d_year;
 let d_month;
+let d_hive = 1;
 
 
 let loaded = false;
@@ -134,7 +137,7 @@ function preload()
 
 function setup() {
   
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(1600, 900);
   
 
   print(windowWidth);
@@ -178,6 +181,14 @@ function draw() {
   
   if(button(10,75,62,42)){
     buttonFlag = b_lNext;
+  }
+  
+  if(button(550,75,30,40, "→")){
+    buttonFlag = b_hNext;
+  }
+  
+  if(button(320,75,30,40, "←")){
+    buttonFlag = b_hPrev;
   }
   
   switch(l_select){
@@ -288,6 +299,20 @@ function draw() {
           l_select = 0;
         break;
         
+      case b_hNext:
+        
+        d_hive++;
+        if(d_hive > 42)
+          l_select = 42;
+        break;
+        
+      case b_hPrev:
+        
+        d_hive--;
+        if(d_hive < 1)
+          d_hive = 1;
+        break;
+        
         
     }
     
@@ -301,9 +326,9 @@ function draw() {
   
   if(loaded == true){
   
-  graph(lines, 'T', 300, 150);
+  graph(lines, 'T', d_hive, 300, 150);
   
-  graph(lines, 'H', 300, 420);
+  graph(lines, 'H', d_hive, 300, 420);
 
   }
 
@@ -323,6 +348,8 @@ function draw() {
   text(minute(), 10, 380);
   text(hour(), 10, 410);
 
+  text("RUCHE " + d_hive, 380,107);
+  
   //print(timer);
 
   //button(100, 200);
@@ -403,7 +430,7 @@ function parseData(index_line) {
 
 
   R = int(R);
-  D = int(D);
+  D = float(D);
   T = float(T);
   H = int(H);
 
@@ -465,7 +492,7 @@ return status;
 
 
 
-function graph(index_line, dataType, posX = 0, posY = 0) {
+function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
   
   
   // set values
@@ -536,6 +563,8 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
     
     
     current = parseData(index_line[i]);
+    
+    if(current.R == currentHive){ //check hive number
 
     switch (dataType) { //what data we wan't to have ?
 
@@ -554,7 +583,7 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
     
     if (firstTime) { // first time we plot ?
       
-      tempX = (posX + 10) + (i * 10);
+      tempX = (posX + 10) + ((current.D-1) * 10);
       
       if(dataType == 'T')
       {
@@ -599,12 +628,12 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
         //Plot temperature values
       
       strokeWeight(1);
-      line(tempX, tempY, posX + 10 + (i * 10), posY + 155 - (readData));//rely points values by a line -> so beautiful !!!
+      line(tempX, tempY, posX + 10 + ((current.D-1) * 10), posY + 155 - (readData));//rely points values by a line -> so beautiful !!!
       strokeWeight(5);
         
         //display value if user put mouse on it (according to the right coordinates)
         
-      if (mouseX > posX + 10 + (i * 10) - 5 && mouseX < posX + 10 + (i * 10) + 5 && mouseY > posY + 155 - (readData) - 5 && mouseY < posY + 155 - (readData) + 5) {
+      if (mouseX > posX + 10 + ((current.D-1) * 10) - 5 && mouseX < posX + 10 + ((current.D-1) * 10) + 5 && mouseY > posY + 155 - (readData) - 5 && mouseY < posY + 155 - (readData) + 5) {
         
         ////////////////////////////////////
         //Only for the first dot !
@@ -619,7 +648,7 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
         
       }
       
-      point(posX + 10 + (i * 10), posY + 155 - (readData));
+      point(posX + 10 + ((current.D-1) * 10), posY + 155 - (readData));
 
       
       
@@ -631,10 +660,10 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
         //Plot humidity values
         
       strokeWeight(1);
-      line(tempX, tempY, posX + 10 + (i * 10), posY + 204 - (readData)*2); //rely points values by a line -> so beautiful !!!
+      line(tempX, tempY, posX + 10 + ((current.D-1) * 10), posY + 204 - (readData)*2); //rely points values by a line -> so beautiful !!!
       strokeWeight(5);
         
-      if (mouseX > posX + 10 + (i * 10) - 5 && mouseX < posX + 10 + (i * 10) + 5 && mouseY > posY + 204 - (readData)*2 - 5 && mouseY < posY + 204 - (readData)*2 + 5) {
+      if (mouseX > posX + 10 + ((current.D-1) * 10) - 5 && mouseX < posX + 10 + ((current.D-1) * 10) + 5 && mouseY > posY + 204 - (readData)*2 - 5 && mouseY < posY + 204 - (readData)*2 + 5) {
         
         rect(mouseX + 10, mouseY + 10, 125, 30);
         textSize(16);
@@ -646,12 +675,12 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
         
       }
       
-      point(posX + 10 + (i * 10), posY + 204 - (readData)*2);
+      point(posX + 10 + ((current.D-1) * 10), posY + 204 - (readData)*2);
         
       }
 
 
-      tempX = (posX + 10) + (i * 10);
+      tempX = (posX + 10) + ((current.D-1) * 10);
       if(dataType == 'T')
       {
       tempY = (posY + 155) - (readData);
@@ -663,7 +692,11 @@ function graph(index_line, dataType, posX = 0, posY = 0) {
     }
 
     //point(300+(i*10),300-(current.T));  
-  }
+    
+  }//end ofcheck Hive number
+    
+    
+  } // enf of for parse lines
 
   stroke(0);
   strokeWeight(1);
