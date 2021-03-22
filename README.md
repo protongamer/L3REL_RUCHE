@@ -181,3 +181,8 @@ H⸮⸮$is!>_d⸮
 
 ![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/maps.png?raw=true)
 
+
+
+
+/!\ ATTENTION : IL FAUT CHANGER ABSOLUMENT LA FRÉQUENCE D'UTILISATION QUI EST ACTUELLEMENT A 915 MHZ ! IL FAUT LA PASSER A 868 MHZ !
+
