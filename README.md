@@ -119,7 +119,8 @@ __Rapport 22/03/2021__
 
 -Test de liaison des modules LoRa (base RFM95 / chip SX1276) : ok
 Réalisé entre 2 Arduino s'envoyant chacun leur tour un message (1 depuis une station de travail, et 1 portatif)
-(photo calculette)
+![alt_text](https://user-images.githubusercontent.com/46281599/112022346-83c0ac00-8b32-11eb-8974-fd85b11ee756.png)
+
 
 Ci-joint le log des résultat de la trame avec quelques erreurs de réception (à suivre de près), durant l'expérience menée sur une trajectoire de 200m à vol d'oiseau en champs avec des obstacles.
 
@@ -178,5 +179,5 @@ H⸮⸮$is!>_d⸮
 ```
 
 
-(photo google maps)
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/maps.png?raw=true)
 
