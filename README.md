@@ -121,7 +121,62 @@ __Rapport 22/03/2021__
 Réalisé entre 2 Arduino s'envoyant chacun leur tour un message (1 depuis une station de travail, et 1 portatif)
 (photo calculette)
 
-Ci-joint le log du 22032021.txt des résultat de la trame avec quelques erreurs de réception (à suivre de près), durant l'expérience menée sur une trajectoire de 200m à vol d'oiseau en champs avec des obstacles.
+Ci-joint le log des résultat de la trame avec quelques erreurs de réception (à suivre de près), durant l'expérience menée sur une trajectoire de 200m à vol d'oiseau en champs avec des obstacles.
+
+Début du log: 
+
+```
+Starting
+Started
+TX
+RX
+Got 13 bytes
+Hello, world!
+RX
+TX
+RX
+Got 13 bytes
+Hello, world!
+RX
+TX
+RX
+Got 13 bytes
+Hello, world!
+RX
+TX
+```
+
+Quand une trame est bien reçue, nous devons recevoir : 
+
+```
+Got 13 bytes
+Hello, world!
+```
+
+Dans le cas ou une trame est reçue avec des erreurs, les message peut être illisible partiellement ou intégrallement !
+
+Quelques exemples:
+
+```
+Got 13 bytes
+Hello⸮⸮	^⸮V⸮
+
+Got 13 bytes
+Hello, wor_
+
+Got 13 bytes
+Hello, wor⸮⸮⸮
+
+Got 13 bytes
+Hellol(7gv⸮`⸮
+
+Got 13 bytes
+Hello, wor⸮⸮
+
+Got 13 bytes
+H⸮⸮$is!>_d⸮
+```
+
 
 (photo google maps)
 
