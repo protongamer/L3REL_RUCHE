@@ -104,3 +104,24 @@ __Rapport 14/03/2021__
 Intégration de la page web fait !
 
 ![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/screen_openiob.png?raw=true)
+
+idée d'utilisation pour mettre en place un serveur simple, en utilisant la commande sous Raspberry Pi OS (Anciennement Raspbian):
+
+``` python3 -m http.server --directory /chemin/du/dossier```
+
+
+
+__Rapport 22/03/2021__
+
+
+-Réalisation d'une demande de code PIN local sur LCD pour accéder au paramètres de la Ruche en local.
+(Photo ici)
+
+-Test de liaison des modules LoRa (base RFM95 / chip SX1276) : ok
+Réalisé entre 2 Arduino s'envoyant chacun leur tour un message (1 depuis une station de travail, et 1 portatif)
+(photo calculette)
+
+Ci-joint le log du 22032021.txt des résultat de la trame avec quelques erreurs de réception (à suivre de près), durant l'expérience menée sur une trajectoire de 200m à vol d'oiseau en champs avec des obstacles.
+
+(photo google maps)
+
