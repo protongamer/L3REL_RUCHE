@@ -139,7 +139,8 @@ void setup() {
   // Set up these settings once, and use them for both TX and RX
 
   // Use a frequency in the g3 which allows 10% duty cycling.
-  LMIC.freq = 915525000;
+  //LMIC.freq = 915525000;
+  LMIC.freq = 868725000;
   // Maximum TX power
   LMIC.txpow = 27;
   // Use a medium spread factor. This can be increased up to SF12 for
