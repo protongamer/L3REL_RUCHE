@@ -186,3 +186,9 @@ H⸮⸮$is!>_d⸮
 
 /!\ ATTENTION : IL FAUT CHANGER ABSOLUMENT LA FRÉQUENCE D'UTILISATION QUI EST ACTUELLEMENT A 915 MHZ ! IL FAUT LA PASSER A 868 MHZ !
 
+
+
+__Rapport du 25/03/2021__
+
+Mise à jour de la page web, changement code et fréquence des modules LoRa, Test des noeuds LoRa → OK, réfléchir à trame sécurisée sans erreur !
+
