@@ -51,45 +51,52 @@ let logo;
 let fr_language = ["Janvier", "Février", "Mars", "Avril",
   "Mai", "Juin", "Juillet", "Août", "Septembre",
   "Octobre", "Novembre", "Décembre", "Humidité(%)",
-  "Température (°C)", "Jours"
+  "Température (°C)", "Jours", "Charger", "Ruche ", "Jour : ",
+  "Heure : "
 ];
 
 
 let en_language = ["January", "February", "March", "April",
   "May", "June", "July", "August", "September",
   "October", "November", "December", "Humidity(%)",
-  "Temperature(°C)", "Days"
+  "Temperature(°C)", "Days", "Load Data", "Hive ", "Day : ",
+  "Time : "
 ];
 
 
 let es_language = ["Enero", "Febrero", "Marzo", "Abril",
   "Mayo", "Junio", "Julio", "Augosto", "Septiembre",
   "Octubre", "Noviembre", "Diciembre", "Humedad(%)",
-  "Temperatura(°C)", "Dias"
+  "Temperatura(°C)", "Dias", "Cargar", "Colmena ", "Día : ",
+  "Hora : "
 ];
 
 let it_language = ["Gennaio", "Febbraio", "Marzo", "Aprile",
   "Maggio", "Guigno", "Luglio", "Agosto", "Settembre",
   "Ottobre", "Novembre", "Dicembre", "Umidità(%)",
-  "Temperatura(°C)", "Giorni"
+  "Temperatura(°C)", "Giorni", "Caricare", "Alveare ", "Giorno : ",
+  "Tempo : "
 ];
 
 let ch_language = ["一月", "二月", "行进", "四月",
   "能够", "六月", "七月", "八月", "九月",
   "十月", "十一月", "十二月", "湿度(%)",
-  "温度(°C)", "天"
+  "温度(°C)", "天", "加载", "蜂巢 ", "天 : ",
+  "时间 : "
 ];
 
 let jp_language = ["1月", "2月", "行進", "4月",
   "できる", "六月", "7月", "8月", "9月",
   "10月", "11月", "12月", "湿度(%)",
-  "温度(°C)", "日"
+  "温度(°C)", "日", "負荷", "ハイブ ", "日 : ",
+  "時間 : "
 ];
 
 let rs_language = ["Январь", "Февраль", "марш", "апреля",
   "Может", "июнь", "июль", "август", "сентябрь",
   "Октябрь", "Ноябрь", "Декабрь", "Влажность(%)",
-  "Температура(°C)", "День"
+  "Температура(°C)", "День", "Нагрузка", "Улей ", "день : ",
+  "время : "
 ];
 
 
@@ -137,11 +144,11 @@ function preload()
 
 function setup() {
   
-  createCanvas(1600, 900);
+  createCanvas(1600, 900); //define a const resolution
   
 
-  print(windowWidth);
-  print(windowHeight);
+  //print(windowWidth);
+  //print(windowHeight);
   
   
 d_year = year();
@@ -158,7 +165,7 @@ function draw() {
    
   
   //set a button to load data
-  if(button(10,275,100,40, "Load Data")){
+  if(button(10,275,100,40, languages[l_select][15])){
     buttonFlag = b_loadData;
   }
   
@@ -344,11 +351,11 @@ function draw() {
   text(languages[l_select][d_month - 1], 50, 180);
   text(d_year, 50, 240);
   fill(0);
-  text(second(), 10, 350);
-  text(minute(), 10, 380);
-  text(hour(), 10, 410);
+  //text(second(), 10, 350);
+  //text(minute(), 10, 380);
+  //text(hour(), 10, 410);
 
-  text("RUCHE " + d_hive, 380,107);
+  text(languages[l_select][16] + d_hive, 380,107);
   
   //print(timer);
 
@@ -500,6 +507,7 @@ function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
   let flag1 = false,
     flag2 = false;
   let readData;
+  let local_h, local_m;
   
   fill(255);
   stroke(0);
@@ -603,12 +611,14 @@ function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
         ////////////////////////////////////
         //Only for the first dot !
         //display the value box when user put the mouse on a dot (and display on the first layer !) !
-        rect(mouseX + 10, mouseY + 10, 125, 30);
+        rect(mouseX + 10, mouseY + 10, 198, 48);
         textSize(16);
-        text(readData + "%", mouseX + 20, mouseY + 30);
+        //text(readData + "%", mouseX + 20, mouseY + 30);
         stroke(255, 0, 0);
         flag1 = true;
-        windowMessage = readData + (dataType == 'H' ? "%" : "°C");
+        local_h = map(current.D - int(current.D),0, 1, 0, 24); //get hour value (in float value, example : 12h30 → 12.5) //need an int value
+        local_m = map(local_h - int(local_h), 0,1,0,60);//get hour value (in float value, example : 50m30 → 50.5 m) //need an int value
+        windowMessage = readData + (dataType == 'H' ? "%" : "°C") + "\n" + languages[l_select][17] + int(current.D) + "   " + languages[l_select][18] + int(local_h) + "h" + (int(local_m) > 9 ? int(local_m) : "0" + int(local_m));
         
       }
     
@@ -638,17 +648,20 @@ function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
         ////////////////////////////////////
         //Only for the first dot !
         //display the value box when user put the mouse on a dot (and display on the first layer !) !
-        rect(mouseX + 10, mouseY + 10, 125, 30); 
+        rect(mouseX + 10, mouseY + 10, 198, 48); 
         textSize(16);
-        text(readData + "°C", mouseX + 20, mouseY + 30);
+        //text(readData + "°C", mouseX + 20, mouseY + 30);
         stroke(255, 0, 0);
         flag2 = true;
         windowMessage = readData + "°C";
+        local_h = map(current.D - int(current.D),0, 1, 0, 24);
+        local_m = map(local_h - int(local_h), 0,1,0,60);
+        windowMessage = readData + "°C" + "\n" + languages[l_select][17] + int(current.D) + "   " + languages[l_select][18] + int(local_h) + "h" + (int(local_m) > 9 ? int(local_m) : "0" + int(local_m));
         print(windowMessage);
         
       }
       
-      point(posX + 10 + ((current.D-1) * 10), posY + 155 - (readData));
+      point(posX + 10 + ((current.D-1) * 10), posY + 155 - (readData)); //draw points in right X coordinate according to the day
 
       
       
@@ -665,17 +678,20 @@ function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
         
       if (mouseX > posX + 10 + ((current.D-1) * 10) - 5 && mouseX < posX + 10 + ((current.D-1) * 10) + 5 && mouseY > posY + 204 - (readData)*2 - 5 && mouseY < posY + 204 - (readData)*2 + 5) {
         
-        rect(mouseX + 10, mouseY + 10, 125, 30);
+        rect(mouseX + 10, mouseY + 10, 198, 48);
         textSize(16);
-        text(readData + "%", mouseX + 20, mouseY + 30);
+        //text(readData + "%", mouseX + 20, mouseY + 30);
         stroke(255, 0, 0);
         flag2 = true;
-        windowMessage = readData + "%";
+        //windowMessage = readData + "%";
+        local_h = map(current.D - int(current.D),0, 1, 0, 24);
+        local_m = map(local_h - int(local_h), 0,1,0,60);
+        windowMessage = readData + "%" + "\n" + languages[l_select][17] + int(current.D) + "   " + languages[l_select][18] + int(local_h) + "h" + (int(local_m) > 9 ? int(local_m) : "0" + int(local_m));
         print(windowMessage);
         
       }
       
-      point(posX + 10 + ((current.D-1) * 10), posY + 204 - (readData)*2);
+      point(posX + 10 + ((current.D-1) * 10), posY + 204 - (readData)*2);//draw points in right X coordinate according to the day
         
       }
 
@@ -707,7 +723,7 @@ function graph(index_line, dataType, currentHive, posX = 0, posY = 0) {
   if (flag1 || flag2) 
   { 
 
-    rect(mouseX + 10, mouseY + 10, 125, 30);
+    rect(mouseX + 10, mouseY + 10, 198, 48);
     textSize(16);
     fill(0);
     text(windowMessage, mouseX + 20, mouseY + 30);
