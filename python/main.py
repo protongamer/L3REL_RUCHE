@@ -6,16 +6,60 @@ import pygame, time, os, sys
 from pygame.locals import *
 from datetime import date
 
+from hive_core import *
 
-########################
-#ROUTINES PARAMETERS
 
-#skip boot sequence ?
-SKIP_BOOT_SEQUENCE = True 
-#How much connected hives you want for your network ?
-MAX_HIVE = 5 
 
-    
+
+
+
+############################################################################
+## Before doing everything --> Read CFG file first
+cfgSweep = 0
+cfgStr = ""
+
+file = open("data/parameters.cfg", "r+")
+cfgStr = file.readlines()
+file.close()
+
+#read CFG
+
+
+
+#an another god like tool
+for cfgSweep in range(len(cfgStr)):
+
+    #check if first character is not "#" to mean that is not a comment
+    if(cfgStr[cfgSweep][0] != "#"):
+        i = 0
+        local_state = 0
+        local_str = ""
+        for i in range(len(cfgStr[cfgSweep])):
+            if(cfgStr[cfgSweep][i] == "M"):
+                local_state = 1 #mean we need to set MAX_HIVE value
+                
+            if(cfgStr[cfgSweep][i] == "A"):
+                local_state = 2 #mean we need to set MAX_HIVE value
+                
+            if(cfgStr[cfgSweep][i] == "0" or cfgStr[cfgSweep][i] == "1" or cfgStr[cfgSweep][i] == "2" or
+            cfgStr[cfgSweep][i] == "3" or cfgStr[cfgSweep][i] == "4" or cfgStr[cfgSweep][i] == "5" or
+            cfgStr[cfgSweep][i] == "6" or cfgStr[cfgSweep][i] == "7" or cfgStr[cfgSweep][i] == "8" or
+            cfgStr[cfgSweep][i] == "9" or cfgStr[cfgSweep][i] == "."):
+                
+                local_str = local_str + cfgStr[cfgSweep][i]
+        
+        if(local_state == 1):
+            MAX_HIVE = int(local_str)
+        if(local_state == 2):
+            SERVER_ADRESS = int(local_str)
+            #print("string value : ", local_str)
+            
+        #print(cfgStr[cfgSweep]) #DEBUG
+        
+        
+        
+
+
 #######################################################################################
 #Functions
 
@@ -45,69 +89,17 @@ def setButton(posBX, posBY, width, height, pic):
     #print(state)
 
     return state
+    
+    
+    
 
-
-
+    
 def fillScreen(arg):
     pygame.draw.rect(screen,arg, ([0,0],[720,480]))
-    
-    
-    
-    
-#This is the ultimate god power tool. His name ? The Parser
-def parseData(index_line):
-    
-    PARAM_R = ""
-    PARAM_D = ""
-    PARAM_T = ""
-    PARAM_H = ""
-    index_chr = 0
-    state_chr = 0
-
-    for index_chr in range(len(index_line)):
-    
-        #####################################
-        #Character mode reading
-        if(index_line[index_chr] == "R"):
-            state_chr = 1
-    
-        elif(index_line[index_chr] == "D"):
-            state_chr = 2
-    
-        elif(index_line[index_chr] == "T"):
-            state_chr = 3
-    
-        elif(index_line[index_chr] == "H"):
-            state_chr = 4
-    
-        elif(index_line[index_chr] == " "):
-            state_chr = 0
-        
-        elif(index_line[index_chr] == "0" or index_line[index_chr] == "1" or index_line[index_chr] == "2" or
-            index_line[index_chr] == "3" or index_line[index_chr] == "4" or index_line[index_chr] == "5" or
-            index_line[index_chr] == "6" or index_line[index_chr] == "7" or index_line[index_chr] == "8" or
-            index_line[index_chr] == "9" or index_line[index_chr] == "."):
-            #####################################
-            #Value reading
-        
-            if(state_chr == 1):
-                PARAM_R = PARAM_R + str(index_line[index_chr])
-            
-            elif(state_chr == 2):
-                PARAM_D = PARAM_D + str(index_line[index_chr])
-        
-            elif(state_chr == 3):
-                PARAM_T = PARAM_T + str(index_line[index_chr])
-            
-            elif(state_chr == 4):
-                PARAM_H = PARAM_H + str(index_line[index_chr])
-    return (int(PARAM_R), int(PARAM_D), float(PARAM_T), int(PARAM_H))            
-    
 
 
 
 
-#######################################################################################
 
 
 
@@ -144,6 +136,12 @@ button2 = False
 
 tempData = [0]*MAX_HIVE
 humData = [0]*MAX_HIVE
+
+
+
+
+
+room = 0
 
 
 #######################################################################################
@@ -223,13 +221,16 @@ if (SKIP_BOOT_SEQUENCE == False):
 
 
 ##################################################
-#Load database
+#Load database 
 
 tempStr = ""
+
 
 file = open("data/Y2021M03.txt", "r+")
 tempStr = file.readlines()
 file.close()
+
+
 
 #index_line = tempStr[0]
 
@@ -246,13 +247,48 @@ humData[R_DATA-1] = H_DATA
 tempData[R_DATA-1] = T_DATA
 humData[R_DATA-1] = H_DATA
 
+(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[2])
+tempData[R_DATA-1] = T_DATA
+humData[R_DATA-1] = H_DATA
+
+(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[3])
+tempData[R_DATA-1] = T_DATA
+humData[R_DATA-1] = H_DATA
+
 #debug my god function
 #print((R_DATA,D_DATA,T_DATA,H_DATA))
 
 
 
 
+print("Max hives : ", MAX_HIVE)
+print("WAN ADRESS : ", SERVER_ADRESS)
+
+databaseWrite("data/Y2021M03.txt", (3, 1, 67, 67))
+
 while loop == True:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
     ######################################################
     #Routines part
     
@@ -355,15 +391,15 @@ while loop == True:
     
     #tempData[0] = 11
     #tempData[1] = 32
-    tempData[2] = 17
-    tempData[3] = 20
-    tempData[4] = 25
+    #tempData[2] = 17
+    #tempData[3] = 20
+    #tempData[4] = 25
     
     #humData[0] = 25
     #humData[1] = 28
-    humData[2] = 93
-    humData[3] = 100
-    humData[4] = 4
+    #humData[2] = 93
+    #humData[3] = 100
+    #humData[4] = 4
         
         
     #############################################
