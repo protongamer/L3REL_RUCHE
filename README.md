@@ -115,7 +115,7 @@ __Rapport 22/03/2021__
 
 
 -Réalisation d'une demande de code PIN local sur LCD pour accéder au paramètres de la Ruche en local.
-(Photo ici)
+![alt_text](https://github.com/protongamer/L3REL_RUCHE/blob/main/pictures/PSWD.png?raw=true)
 
 -Test de liaison des modules LoRa (base RFM95 / chip SX1276) : ok
 Réalisé entre 2 Arduino s'envoyant chacun leur tour un message (1 depuis une station de travail, et 1 portatif)
