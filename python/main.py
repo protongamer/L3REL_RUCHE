@@ -99,7 +99,43 @@ def fillScreen(arg):
 
 
 
-
+def setGraph(coordinates, dataType, actualHive):
+    
+    (baseX, baseY) = coordinates #read base graph
+    local_x = 0
+    local_y = 0
+    old_x = 0
+    old_y = 0
+    
+    screen.blit(graph, coordinates) #display grid(.bmp file)
+    
+    
+   #read buffer 
+    for bufferSweep in range(len(tempStr)):
+        (R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[bufferSweep])
+        
+        if(R_DATA == actualHive):
+        
+            old_x = local_x + baseX
+            old_y = local_y + baseY
+        
+            if( dataType == HUMIDITY_DATA ):
+                local_x = convert(D_DATA, 0.0, 31.0, 0.0, GFX_GRAPH_WIDTH)
+                local_y = convert(H_DATA, MIN_HUMIDITY, MAX_HUMIDITY, GFX_GRAPH_HEIGHT, 0.0)
+            
+            
+            if( dataType == TEMPERATURE_DATA ):
+                local_x = convert(D_DATA, 0.0, 31.0, 0.0, GFX_GRAPH_WIDTH)
+                local_y = convert(T_DATA, MIN_TEMPERATURE, MAX_TEMPERATURE, GFX_GRAPH_HEIGHT, 0.0)
+            
+            ####################
+            #DRAW WHEN NEEDED !
+            if(bufferSweep > 0):
+                    pygame.draw.line(screen,GFX_COLOR_LINES, (old_x, old_y), (local_x+baseX, local_y+baseY))
+                
+            pygame.draw.circle(screen, GFX_COLOR_POINTS, (baseX+local_x, baseY+local_y), 2)
+        
+    
 
 
 
@@ -136,12 +172,13 @@ button2 = False
 
 tempData = [0]*MAX_HIVE
 humData = [0]*MAX_HIVE
+dateData = [0]*MAX_HIVE
 
 
 
 
 
-room = 0
+room = SETUP_ROOM
 
 
 #######################################################################################
@@ -191,6 +228,10 @@ but4 = pygame.image.load('pic/setup.bmp')
 but5 = pygame.image.load('pic/button.bmp')
 window = pygame.image.load('pic/window.bmp')
 graph = pygame.image.load('pic/graph.bmp')
+text1 = pygame.image.load('pic/text_resume.png')
+text2 = pygame.image.load('pic/text_cfg.png')
+text3 = pygame.image.load('pic/text_sync.png')
+text4 = pygame.image.load('pic/text_quit.png')
 
 
 #################################################################
@@ -239,21 +280,8 @@ D_DATA = 0
 T_DATA = .0
 H_DATA = 0
     
-(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[0])
-tempData[R_DATA-1] = T_DATA
-humData[R_DATA-1] = H_DATA
+    
 
-(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[1])
-tempData[R_DATA-1] = T_DATA
-humData[R_DATA-1] = H_DATA
-
-(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[2])
-tempData[R_DATA-1] = T_DATA
-humData[R_DATA-1] = H_DATA
-
-(R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[3])
-tempData[R_DATA-1] = T_DATA
-humData[R_DATA-1] = H_DATA
 
 #debug my god function
 #print((R_DATA,D_DATA,T_DATA,H_DATA))
@@ -268,67 +296,89 @@ databaseWrite("data/Y2021M03.txt", (3, 1, 67, 67))
 
 while loop == True:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-    ######################################################
-    #Routines part
-    
-    #get time
-    t = time.localtime()
-    today = date.today();
-    day = today.strftime("%d/%m/%Y")
-    current_time = time.strftime("%H:%M:%S",t)
-    
-    TitleRuche = "Ruche " + str(currentRuche)
-    StrTemp = str(tempData[currentRuche-1]) + "°C"
-    StrHum = str(humData[currentRuche-1]) + "%"
-    
-    ######################################################
-    #Display part
     fillScreen((0,0,0))
-    screen.blit(temp, (0,142))
-    screen.blit(hum, (0,260))
-    screen.blit(window, (225,20))
-    screen.blit(graph, (280,142))
-    screen.blit(graph, (280,280))
-    #Text part
+
+
+    if(room == CFG_ROOM):
+        
+        button5 = setButton(240, 10, 240, 100, but5) #previous button
+        screen.blit(text1, (240, 10))
     
-    displayTemp = font.render(StrTemp, True, (255,255,255))
-    screen.blit(displayTemp, (95, 180))
+        button1 = setButton(480, 140, 50, 50, but2) #next button
+        button2 = setButton(160, 140, 50, 50, but3) #previous button
+        button3 = setButton(480, 240, 50, 50, but2) #next button
+        button4 = setButton(160, 240, 50, 50, but3) #previous button
+        
+        if(button5):
+                flag1 = True
+        
+        if(button5 == False and flag1 == True):
+                flag1 = False
+                room = SETUP_ROOM
     
-    displayHum = font.render(StrHum, True, (255,255,255))
-    screen.blit(displayHum, (95, 300))
+
+    if(room == SETUP_ROOM):
+            button3 = setButton(240, 10, 240, 100, but5) #previous button
+            screen.blit(text1, (240, 10))
+            button4 = setButton(240, 130, 240, 100, but5) #previous button
+            screen.blit(text2, (240, 130))
+            button5 = setButton(240, 250, 240, 100, but5) #previous button
+            screen.blit(text3, (240, 250))
+            loop = not(setButton(240, 370, 240, 100, but5)) #previous button
+            screen.blit(text4, (240, 370))
+            
+            if(button4):
+                room = CFG_ROOM
+            
+            if(button3):
+                room = MAIN_ROOM
+            
+            
+
+    if(room == MAIN_ROOM):
+
+        ######################################################
+        #Routines part
     
-    displayRuche = font.render(TitleRuche, True, (255,255,255))
-    screen.blit(displayRuche, (280, 55))
+        #get time
+        t = time.localtime()
+        today = date.today();
+        day = today.strftime("%d/%m/%Y")
+        current_time = time.strftime("%H:%M:%S",t)
     
-    displayDay = font.render(day, True, (255,255,255))
-    screen.blit(displayDay, (20, 400))
+        TitleRuche = "Ruche " + str(currentRuche)
+        StrTemp = str(tempData[currentRuche-1]) + "°C"
+        StrHum = str(humData[currentRuche-1]) + "%"
     
-    displayTime = font.render(current_time, True, (255,255,255))
-    screen.blit(displayTime, (20, 440))
+        ######################################################
+        #Display part
+        fillScreen((0,0,0))
+        screen.blit(temp, (0,142))
+        screen.blit(hum, (0,260))
+        screen.blit(window, (225,20))
+        #screen.blit(graph, (280,142))
+        #screen.blit(graph, (280,280))
+        setGraph((280,142), TEMPERATURE_DATA, currentRuche)
+        setGraph((280,280), HUMIDITY_DATA, currentRuche)
+        #Text part
+    
+        displayTemp = font.render(StrTemp, True, (255,255,255))
+        screen.blit(displayTemp, (95, 180))
+    
+        displayHum = font.render(StrHum, True, (255,255,255))
+        screen.blit(displayHum, (95, 300))
+    
+        displayRuche = font.render(TitleRuche, True, (255,255,255))
+        screen.blit(displayRuche, (280, 55))
+    
+        displayDay = font.render(day, True, (255,255,255))
+        screen.blit(displayDay, (20, 400))
+    
+        displayTime = font.render(current_time, True, (255,255,255))
+        screen.blit(displayTime, (20, 440))
     
     
-    ######################################################
+        ######################################################
     
     
     
@@ -336,40 +386,40 @@ while loop == True:
     
     
             
-    #####################################################
-    #set Buttons
-    loop = not(setButton(680, 20, 25, 25, but1)) #exit button
-    
-    button1 = setButton(480, 40, 50, 50, but2) #next button
-    button2 = setButton(160, 40, 50, 50, but3) #previous button
-    setButton(640, 40, 50, 50, but4) #setup button
-    #setButton(640, 200, 240, 100, but5)
+        #####################################################
+        #set Buttons
+        #loop = not(setButton(680, 20, 25, 25, but1)) #exit button
+        button1 = setButton(480, 40, 50, 50, but2) #next button
+        button2 = setButton(160, 40, 50, 50, but3) #previous button
+        if(setButton(640, 40, 50, 50, but4)): #setup button
+            room = SETUP_ROOM #goto setup room
+        #setButton(640, 200, 240, 100, but5)
    
-    if(button1 == True):
-        flag1 = True
+        if(button1 == True):
+            flag1 = True
     
-    if(button2 == True):
-        flag2 = True
+        if(button2 == True):
+            flag2 = True
    
-    if(button1 == False and flag1 == True):
-        currentRuche = currentRuche + 1
-        #if we overflow max value
-        if(currentRuche > MAX_HIVE):
-            currentRuche = 1        
-        #useful to do it one time
-        flag1 = False
+        if(button1 == False and flag1 == True):
+            currentRuche = currentRuche + 1
+            #if we overflow max value
+            if(currentRuche > MAX_HIVE):
+                currentRuche = 1        
+            #useful to do it one time
+            flag1 = False
         
-    if(button2 == False and flag2 == True):
-        currentRuche = currentRuche - 1
-        #if we overflow min value
-        if(currentRuche < 1):
-            currentRuche = MAX_HIVE        
-        #useful to do it one time
-        flag2 = False
+        if(button2 == False and flag2 == True):
+            currentRuche = currentRuche - 1
+            #if we overflow min value
+            if(currentRuche < 1):
+                currentRuche = MAX_HIVE        
+            #useful to do it one time
+            flag2 = False
         
    
    
-    ######################################################
+        ######################################################
     
     
     
@@ -379,35 +429,35 @@ while loop == True:
     
     
    
-    ######################################################
-    #debug mouse 
+        ######################################################
+        #debug mouse 
     if (pygame.mouse.get_pressed() == (True,False,False)):
         (mX, mY) = pygame.mouse.get_pos()    
         print((mX, mY))
         
     
-    #######################################################
-    #Debug values
+        #######################################################
+        #Debug values
     
-    #tempData[0] = 11
-    #tempData[1] = 32
-    #tempData[2] = 17
-    #tempData[3] = 20
-    #tempData[4] = 25
+        #tempData[0] = 11
+        #tempData[1] = 32
+        #tempData[2] = 17
+        #tempData[3] = 20
+        #tempData[4] = 25
     
-    #humData[0] = 25
-    #humData[1] = 28
-    #humData[2] = 93
-    #humData[3] = 100
-    #humData[4] = 4
+        #humData[0] = 25
+        #humData[1] = 28
+        #humData[2] = 93
+        #humData[3] = 100
+        #humData[4] = 4
         
         
-    #############################################
-    #Other stuff
+        #############################################
+        #Other stuff
     
     
     
-    #If user click on stop button(from os)
+        #If user click on stop button(from os)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             loop = False

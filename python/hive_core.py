@@ -13,6 +13,30 @@ SKIP_BOOT_SEQUENCE = True
 MAX_HIVE = 5 
 
 
+
+########
+#Parameters values (better to be in const to work 8-)
+
+MIN_TEMPERATURE = -50.0
+MAX_TEMPERATURE = 150.0
+MIN_HUMIDITY = 0.0
+MAX_HUMIDITY = 100.0
+
+GFX_GRAPH_WIDTH = 300.0
+GFX_GRAPH_HEIGHT = 100.0
+GFX_COLOR_POINTS = (0,255,255)
+GFX_COLOR_LINES = (0,255,255)
+
+HUMIDITY_DATA = 0
+TEMPERATURE_DATA = 1
+
+CFG_STRING_1 = "#MAIN PARAMETERS\n\n"
+CFG_STRING_2 = "#Max hives[1-99]\n"
+CFG_STRING_1 = "#WAN SERVER ADRESS (DEFAULT → 0)\n"
+
+
+
+
 ########################
 
 
@@ -23,8 +47,12 @@ MAX_HIVE = 5
 SERVER_ADRESS = 0
 
 
+#######################
+
+
 MAIN_ROOM = 0
 SETUP_ROOM = 1
+CFG_ROOM = 2
 
     
     
@@ -61,7 +89,7 @@ def parseData(index_line):
         elif(index_line[index_chr] == "0" or index_line[index_chr] == "1" or index_line[index_chr] == "2" or
             index_line[index_chr] == "3" or index_line[index_chr] == "4" or index_line[index_chr] == "5" or
             index_line[index_chr] == "6" or index_line[index_chr] == "7" or index_line[index_chr] == "8" or
-            index_line[index_chr] == "9" or index_line[index_chr] == "."):
+            index_line[index_chr] == "9" or index_line[index_chr] == "." or index_line[index_chr] == "-"):
             #####################################
             #Value reading
         
@@ -94,3 +122,9 @@ def databaseWrite(f_destination, parameters):
     db = open(f_destination, "a")
     local_str = "R" + str(PARAM_R) + " D" + str(PARAM_D) + " T" + str(PARAM_T) + " H" + str(PARAM_H) + "\n"
     db.write(local_str)
+    
+    
+    
+    
+def convert(_v, in_min, in_max, out_min, out_max) :
+  return (_v - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
