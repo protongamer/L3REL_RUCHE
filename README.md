@@ -192,3 +192,12 @@ __Rapport du 25/03/2021__
 
 Mise à jour de la page web, changement code et fréquence des modules LoRa, Test des noeuds LoRa → OK, réfléchir à trame sécurisée sans erreur !
 
+__Rapport du 04/04/2021__
+
+Mise à jour de l'application Python (menu gestion du nombre de ruche / adresse du serveur WAN).
+Mise à jour de la partie arduino embarquée (Gestion de sauvegarde des paramètres par EEPROM, Temporisation, gestion énergie presque aboutie)
+
+Prochaine étapes :
+
+Mise en place connectivité(établire la trame voulue), gestion database, finaliser le low power, gestion de la synchronisation des ruches. 
+
