@@ -6,5 +6,5 @@
        |_|                              
 
 University of Paul Sabatier - Toulouse		      	  	  
-Alpha v0.3 - 06/03/2021
+Alpha v0.7 - 10/04/2021
 Made Using Python 3.9.2
