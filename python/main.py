@@ -99,6 +99,17 @@ def fillScreen(arg):
 
 
 
+def drawBar(coordinates, level):
+    
+    (bar_x, bar_y) = GFX_BAR_SIZE
+    
+    bar_x = level
+    
+    pygame.draw.rect(screen, GFX_COLOR_BAR1, (coordinates, GFX_BAR_SIZE));
+    pygame.draw.rect(screen, GFX_COLOR_BAR2, (coordinates, (bar_x, bar_y)));
+
+
+
 def setGraph(coordinates, dataType, actualHive):
     
     (baseX, baseY) = coordinates #read base graph
@@ -165,6 +176,9 @@ loop = True
 #flags, hmmm..., that pretty good for buttons, no ?
 flag1 = False
 flag2 = False
+flag3 = False
+flag4 = False
+flag5 = False
 
 #button state ? That necessary too
 button1 = False
@@ -175,10 +189,11 @@ humData = [0]*MAX_HIVE
 dateData = [0]*MAX_HIVE
 
 
+synchronise_level = MAX_HIVE #used to sync hives
 
 
 
-room = SETUP_ROOM
+room = MAIN_ROOM
 
 
 #######################################################################################
@@ -237,6 +252,7 @@ text4 = pygame.image.load('pic/text_quit.png')
 #################################################################
 #Load fonts
 font = pygame.font.SysFont(None, 48)
+mini_font = pygame.font.SysFont(None, 36)
 
 
 ##################################################################
@@ -297,6 +313,7 @@ databaseWrite("data/Y2021M03.txt", (3, 1, 67, 67))
 while loop == True:
 
     fillScreen((0,0,0))
+    
 
 
     if(room == CFG_ROOM):
@@ -309,29 +326,94 @@ while loop == True:
         button3 = setButton(480, 240, 50, 50, but2) #next button
         button4 = setButton(160, 240, 50, 50, but3) #previous button
         
+        local_Text_1 = mini_font.render("Max hives : " + str(MAX_HIVE), True, (255,255,255))
+        local_Text_2 = mini_font.render("Server address : " + str(SERVER_ADRESS), True, (255,255,255))
+        screen.blit(local_Text_1, (260, 150))
+        screen.blit(local_Text_2, (240, 250))
+        
+        
+        
         if(button5):
+                flag5 = True
+        
+        if(button5 == False and flag5 == True):
+                flag5 = False
+                synchronise_level = MAX_HIVE
+                tempData = [0]*MAX_HIVE
+                humData = [0]*MAX_HIVE
+                dateData = [0]*MAX_HIVE
+                db = open("data/parameters.cfg", "w")
+                local_str = CFG_STRING_1 + CFG_STRING_2 + "M = " + str(MAX_HIVE) + "\n\n" + CFG_STRING_3 + "A = " + str(SERVER_ADRESS)
+                db.write(local_str)
+                db.close()
+                room = SETUP_ROOM
+                
+        if(button1):
                 flag1 = True
         
-        if(button5 == False and flag1 == True):
+        if(button1 == False and flag1 == True):
                 flag1 = False
-                room = SETUP_ROOM
+                MAX_HIVE = MAX_HIVE + 1
+                if(MAX_HIVE > 99):
+                    MAX_HIVE = 99
+                
+        if(button2):
+                flag2 = True
+        
+        if(button2 == False and flag2 == True):
+                flag2 = False
+                MAX_HIVE = MAX_HIVE - 1
+                if(MAX_HIVE < 1):
+                    MAX_HIVE = 1 
+                
+                
+        if(button3):
+                flag3 = True
+        
+        if(button3 == False and flag3 == True):
+                flag3 = False
+                SERVER_ADRESS = SERVER_ADRESS + 1
+                if(SERVER_ADRESS > 255):
+                    SERVER_ADRESS = 255
+        
+        if(button4):
+                flag4 = True
+        
+        if(button4 == False and flag4 == True):
+                flag4 = False
+                SERVER_ADRESS = SERVER_ADRESS - 1
+                if(SERVER_ADRESS < 0):
+                    SERVER_ADRESS = 0
+                
     
 
     if(room == SETUP_ROOM):
-            button3 = setButton(240, 10, 240, 100, but5) #previous button
-            screen.blit(text1, (240, 10))
-            button4 = setButton(240, 130, 240, 100, but5) #previous button
-            screen.blit(text2, (240, 130))
-            button5 = setButton(240, 250, 240, 100, but5) #previous button
-            screen.blit(text3, (240, 250))
-            loop = not(setButton(240, 370, 240, 100, but5)) #previous button
-            screen.blit(text4, (240, 370))
+    
+            if (synchronise_level == MAX_HIVE): #if no sync is in progress
+                button3 = setButton(240, 10, 240, 100, but5) #previous button
+                screen.blit(text1, (240, 10))
+                button4 = setButton(240, 130, 240, 100, but5) #CFG button
+                screen.blit(text2, (240, 130))
+                button5 = setButton(240, 250, 240, 100, but5) #synchronise hives button
+                screen.blit(text3, (240, 250))
+                loop = not(setButton(240, 370, 240, 100, but5)) #quit button
+                screen.blit(text4, (240, 370))
             
-            if(button4):
-                room = CFG_ROOM
+                if(button5):
+                    synchronise_level = 1
             
-            if(button3):
-                room = MAIN_ROOM
+                if(button4):
+                    room = CFG_ROOM
+            
+                if(button3):
+                    room = MAIN_ROOM
+                    
+            elif (synchronise_level <= MAX_HIVE): #sunc in progress
+                print(synchronise_level)
+                drawBar((240,200), convert(synchronise_level, 0, MAX_HIVE, 0, 200))
+                synchronise_level = synchronise_level + 1
+                time.sleep(0.05)
+                
             
             
 

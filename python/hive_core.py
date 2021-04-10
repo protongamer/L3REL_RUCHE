@@ -14,6 +14,7 @@ MAX_HIVE = 5
 
 
 
+
 ########
 #Parameters values (better to be in const to work 8-)
 
@@ -26,13 +27,16 @@ GFX_GRAPH_WIDTH = 300.0
 GFX_GRAPH_HEIGHT = 100.0
 GFX_COLOR_POINTS = (0,255,255)
 GFX_COLOR_LINES = (0,255,255)
+GFX_COLOR_BAR1 = (127,127,127)
+GFX_COLOR_BAR2 = (0,0,255)
+GFX_BAR_SIZE = (200,40)
 
 HUMIDITY_DATA = 0
 TEMPERATURE_DATA = 1
 
 CFG_STRING_1 = "#MAIN PARAMETERS\n\n"
 CFG_STRING_2 = "#Max hives[1-99]\n"
-CFG_STRING_1 = "#WAN SERVER ADRESS (DEFAULT → 0)\n"
+CFG_STRING_3 = "#WAN SERVER ADRESS (DEFAULT -> 0)\n"
 
 
 
@@ -122,6 +126,7 @@ def databaseWrite(f_destination, parameters):
     db = open(f_destination, "a")
     local_str = "R" + str(PARAM_R) + " D" + str(PARAM_D) + " T" + str(PARAM_T) + " H" + str(PARAM_H) + "\n"
     db.write(local_str)
+    db.close()
     
     
     
