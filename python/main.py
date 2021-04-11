@@ -9,7 +9,18 @@ from datetime import date
 from hive_core import *
 
 
-
+############################################
+#
+# TODO list:
+#
+# LORA WAN SUPPORT:
+#
+# -GET AND STORE DATA TO THE RPI
+# -SYNC HIVES
+# 
+#
+#
+#
 
 
 
@@ -63,7 +74,7 @@ for cfgSweep in range(len(cfgStr)):
 #######################################################################################
 #Functions
 
-
+#######################
 def setButton(posBX, posBY, width, height, pic):
     
     
@@ -93,12 +104,12 @@ def setButton(posBX, posBY, width, height, pic):
     
     
 
-    
+########################
 def fillScreen(arg):
     pygame.draw.rect(screen,arg, ([0,0],[720,480]))
 
 
-
+########################
 def drawBar(coordinates, level):
     
     (bar_x, bar_y) = GFX_BAR_SIZE
@@ -109,7 +120,7 @@ def drawBar(coordinates, level):
     pygame.draw.rect(screen, GFX_COLOR_BAR2, (coordinates, (bar_x, bar_y)));
 
 
-
+#######################
 def setGraph(coordinates, dataType, actualHive):
     
     (baseX, baseY) = coordinates #read base graph
@@ -118,12 +129,16 @@ def setGraph(coordinates, dataType, actualHive):
     old_x = 0
     old_y = 0
     
+    localLastValue = 0
+    
+    
     screen.blit(graph, coordinates) #display grid(.bmp file)
     
     
    #read buffer 
     for bufferSweep in range(len(tempStr)):
         (R_DATA,D_DATA,T_DATA,H_DATA) = parseData(tempStr[bufferSweep])
+       
         
         if(R_DATA == actualHive):
         
@@ -133,11 +148,12 @@ def setGraph(coordinates, dataType, actualHive):
             if( dataType == HUMIDITY_DATA ):
                 local_x = convert(D_DATA, 0.0, 31.0, 0.0, GFX_GRAPH_WIDTH)
                 local_y = convert(H_DATA, MIN_HUMIDITY, MAX_HUMIDITY, GFX_GRAPH_HEIGHT, 0.0)
-            
+                localLastValue = H_DATA
             
             if( dataType == TEMPERATURE_DATA ):
                 local_x = convert(D_DATA, 0.0, 31.0, 0.0, GFX_GRAPH_WIDTH)
                 local_y = convert(T_DATA, MIN_TEMPERATURE, MAX_TEMPERATURE, GFX_GRAPH_HEIGHT, 0.0)
+                localLastValue = T_DATA
             
             ####################
             #DRAW WHEN NEEDED !
@@ -145,6 +161,7 @@ def setGraph(coordinates, dataType, actualHive):
                     pygame.draw.line(screen,GFX_COLOR_LINES, (old_x, old_y), (local_x+baseX, local_y+baseY))
                 
             pygame.draw.circle(screen, GFX_COLOR_POINTS, (baseX+local_x, baseY+local_y), 2)
+    return localLastValue
         
     
 
@@ -163,6 +180,8 @@ mY = 0
 
 #used to load text files or data files
 tempStr = ""
+lastTemperature = 0
+lastHumidity = 0
 
 #used to display Ruche (1,2,3,4,5,...)
 TitleRuche = ""
@@ -276,6 +295,21 @@ if (SKIP_BOOT_SEQUENCE == False):
     time.sleep(3)
 
 
+####################################
+#Read time
+
+t = time.localtime()
+today = date.today()
+year = today.strftime("%Y")
+month = today.strftime("%m")
+day = today.strftime("%d")
+
+
+
+
+
+
+
 
 ##################################################
 #Load database 
@@ -283,7 +317,7 @@ if (SKIP_BOOT_SEQUENCE == False):
 tempStr = ""
 
 
-file = open("data/Y2021M03.txt", "r+")
+file = open(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", "r+")
 tempStr = file.readlines()
 file.close()
 
@@ -308,7 +342,24 @@ H_DATA = 0
 print("Max hives : ", MAX_HIVE)
 print("WAN ADRESS : ", SERVER_ADRESS)
 
-databaseWrite("data/Y2021M03.txt", (3, 1, 67, 67))
+
+t = time.localtime()
+today = date.today()
+year = today.strftime("%Y")
+month = today.strftime("%m")
+day = today.strftime("%d")
+#current_time = time.strftime("%H:%M:%S",t)
+hour = time.strftime("%H",t)
+minute = time.strftime("%M",t)
+seconds = (int(23)*3600) + (int(59)*60)
+day = int(day) + convert(int(seconds), 0, 86400, 0.0, 1.0001)
+
+print(year, "  d(s):", seconds, "  d:", day)
+
+#write to database at destination
+databaseWrite(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", (3, day, 67, 67))
+
+
 
 while loop == True:
 
@@ -429,8 +480,10 @@ while loop == True:
         current_time = time.strftime("%H:%M:%S",t)
     
         TitleRuche = "Ruche " + str(currentRuche)
-        StrTemp = str(tempData[currentRuche-1]) + "°C"
-        StrHum = str(humData[currentRuche-1]) + "%"
+        #StrTemp = str(tempData[currentRuche-1]) + "°C"
+        #StrHum = str(humData[currentRuche-1]) + "%"
+        StrTemp = str(lastTemperature) + "°C"
+        StrHum = str(lastHumidity) + "%"
     
         ######################################################
         #Display part
@@ -440,8 +493,8 @@ while loop == True:
         screen.blit(window, (225,20))
         #screen.blit(graph, (280,142))
         #screen.blit(graph, (280,280))
-        setGraph((280,142), TEMPERATURE_DATA, currentRuche)
-        setGraph((280,280), HUMIDITY_DATA, currentRuche)
+        lastTemperature = setGraph((280,142), TEMPERATURE_DATA, currentRuche)
+        lastHumidity = setGraph((280,280), HUMIDITY_DATA, currentRuche)
         #Text part
     
         displayTemp = font.render(StrTemp, True, (255,255,255))
@@ -554,7 +607,7 @@ while loop == True:
 
 
 #if end loop, then exit
-time.sleep(1)
+time.sleep(0.1)
 exit()
 
 

@@ -12,6 +12,7 @@ SKIP_BOOT_SEQUENCE = True
 #How much connected hives you want for your network ?
 MAX_HIVE = 5 
 
+dataFolder = "data/"
 
 
 
