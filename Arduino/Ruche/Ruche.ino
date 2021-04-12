@@ -1,9 +1,13 @@
-#include "DHT.h"
+
 #include <math.h>
 #include <Wire.h>
 #include "rgb_lcd.h"
 #include <Encoder.h>
 #include <TimerOne.h>
+
+#include <EEPROM.h>
+
+#include "DHT.h"
 #include "def.h"
 
 
@@ -14,9 +18,9 @@ const int colorR = 255;
 const int colorG = 0;
 const int colorB = 0;
 
-// Capteur température et humidité DHT11
+// Capteur température et humidité DHT22
 #define DHTPIN 5
-#define DHTTYPE DHT11
+#define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
 int relay_pin = 8;
@@ -28,15 +32,16 @@ unsigned long temps = 0;
 unsigned long temps_capteur;
 unsigned long T_Blink = 0;
 
-int Ad_R; // Adresse de la ruche
+int Ad_R = 1; // Adresse de la ruche
 int Ad_S; // Adresse du serveur
 int TempoStatut; // Temporisation statut (carte opérationnelle)
-int TempoData; // Temporisation activation des capteurs de la ruche
-int h;
-int nbre;
-int choix;
+int TempoData = 1; // Temporisation activation des capteurs de la ruche
+int h; // humidité
+int nbre;// utiliser dans le mot de passe
+int choix;// utiliser dans le mot de passe 
 int colonne_Curseur = 2 ;
-uint16_t ChoixTempo = 1;
+uint16_t ChoixTempo = 1; // choix de la tempo dans les paramètres
+uint16_t ChoixAdresse = 1; // choix de l'adresse de la ruche dans les paramètres 
 
 char Affichage = 0;
 char Parametre = 0;
@@ -46,7 +51,7 @@ char c;
 
 byte menu = 0;
 
-float t;
+float t; //température
 
 bool BT1; // pouton poussoir de l'encodeur
 bool flag = 0; // machine à état
@@ -56,9 +61,9 @@ bool act = 0; // actionneur utiliser pour faire clignoter le caractère
 bool Mdp = 0; // arbitre (vérifie si la condition est vrai ou fausse)
 
 
-void affichage (int page);
-void ecriture(bool state) ;
-void blink_car();
+void affichage (int page); // Mode d'affichage (menu déroulant)
+void ecriture(bool state) ; //Affichage du curseur
+void blink_car(); // Clignotement d'un caractère
 
 ////////////////////////////////////////////////////////////////////////////////
 void setup()
@@ -69,12 +74,29 @@ void setup()
   encoder.Timer_init();
   pinMode(relay_pin, OUTPUT); // relais câblé sur la broche 8
 
-  // Défini le nombre de colonne et de ligne
+  ////////////////////////////////////////////////////////////////////////////
+  //Défini le nombre de colonne et de ligne
+  
   lcd.begin(16, 2);
   lcd.setRGB(colorR, colorG, colorB);
 
+  ///////////////////////////////////////////////////////////////////////////
+  //lecture de l'EEPROM
+  
+  ChoixTempo = EEPROM.read(Adr_ChoixTempo); // sauvegarde du choix de la tempo dans les paramètres
+  ChoixAdresse = EEPROM.read(Adr_ChoixAdresse); // sauvegarde du choix de l'adresse de la ruche dans les paramètres
+
+  if (ChoixTempo < 1 || ChoixTempo > 24 || ChoixAdresse < 1 || ChoixAdresse > 99)
+  {
+  menu = 5;  
+  }
+  
+  /////////////////////////////////////////////////////////////////////////////
+  // affichage du menu
+  
   affichage(menu);
-}
+
+}//fin void setup
 
 /////////////////////////////////////////////////////////////////////////////
 // Void loop
@@ -89,7 +111,7 @@ void loop()
   BT1 = digitalRead (4);
 
   /////////////////////////////////////////////////////////////////////////
-  // Utilisation d'un relais pour activer le capteur
+  // Utilisation d'un relais pour activer le capteur température/humidité
 
 Serial.print(((unsigned long)ChoixTempo*1000)*3600);
 Serial.print("\t");
@@ -115,13 +137,13 @@ Serial.println(millis() - temps_capteur);
   
   digitalWrite (relay_pin, LOW);
 
-temps_capteur = millis();
+  temps_capteur = millis();
 
 }
 
 
   ///////////////////////////////////////////////////////////////////////
-  // temporisateur pour le capteur température/humidité
+  // temporisateur pour lire la température et l'humidité 
 
   if ( millis () - temps >= 1000 && (menu == 3 || menu == 2) )
   {
@@ -186,10 +208,10 @@ else if ( menu == 4)
 
 
   ///////////////////////////////////////////////////////////////
-  // Position de l'encodeur
+  // Position de l'encodeur (sauf menu 4,5 et 6)
 
 
-  if ( menu != 4 && menu != 5)
+  if ( menu != 4 && menu != 5 && menu != 6)
 {
 
   if (encoder.direct == 1 && flagEnc == 0)
@@ -208,7 +230,7 @@ else if ( menu == 4)
   }
 
   //////////////////////////////////////////////////////////////
-  ///Position encodeur pour le menu 4
+  ///Position encodeur pour le menu 4: mot de passe
 
   if (encoder.rotate_flag == 1 && menu == 4 && act == 1)
 {
@@ -277,51 +299,89 @@ else if ( menu == 4)
   }
 
   ////////////////////////////////////////////////////////////////////
-  // TempoData
-
+  //menu 5: choix de la tempo dans les paramètres (TempoData) 
+  
 if( menu == 5 ){
 
   if (encoder.rotate_flag == 1 )
 {
-  lcd.setCursor(1, 1);
-  lcd.print("    ");
-  lcd.setCursor(1, 1);
-  lcd.print (TempoData);
-  lcd.print(" h");
+  
     if (encoder.direct == 1)
     {
       TempoData++;
-      if (TempoData > 56)
-        TempoData = 56;
+      if (TempoData > 24)
+        TempoData = 24;
     }
     else
     {
       TempoData--;
-      if (TempoData < 0)
-        TempoData = 0;
+      if (TempoData < 1)
+        TempoData = 1;
     }
     encoder.rotate_flag = 0;
 
-
-    
+  lcd.setCursor(1, 1);
+  lcd.print("    ");
+  lcd.setCursor(1, 1);
+  lcd.print (TempoData);
+  lcd.print("h");
 }
 
   if (BT1 == 1 && flag == 0)
-  {
+{
   ChoixTempo = TempoData;
+  EEPROM.write (Adr_ChoixTempo,ChoixTempo);
   lcd.setCursor (1, 1); 
   lcd.print (ChoixTempo);
-
-   
-  }
+  delay (5000); 
+  menu = 6; 
+  flag = 1;
+}
 
 }//menu = 5
 
+  ////////////////////////////////////////////////////////////////
+  //menu 6: Choix de l'adresse de la ruche dans les paramètres (Ad_R)
+ 
+if( menu == 6){
 
+  if (encoder.rotate_flag == 1 )
+{
+    if (encoder.direct == 1)
+    {
+      Ad_R++;
+      if (Ad_R > 99)
+        Ad_R = 99;
+    }
+    else
+    {
+      Ad_R--;
+      if (Ad_R < 1)
+        Ad_R = 1;
+    }
+    encoder.rotate_flag = 0;
+ 
+  lcd.setCursor(1, 1);
+  lcd.print("    ");
+  lcd.setCursor(1, 1);
+  lcd.print (Ad_R);   
+}
 
+  if (BT1 == 1 && flag == 0)
+{
+  ChoixAdresse = Ad_R;
+  EEPROM.write (Adr_ChoixAdresse,ChoixAdresse); 
+  lcd.setCursor (1, 1); 
+  lcd.print (ChoixAdresse);
+  delay (5000); 
+  menu = 0; 
+  flag = 1; 
+}
+
+}//menu = 6
 
    
-}
+} //fin void loop 
 
 
 //////////////////////////////////////////////////////////////
@@ -377,8 +437,20 @@ void affichage (int page)
     lcd.print (" Temporisation      ");
     lcd.setCursor (1, 1);
     lcd.print ("                    ");
+    lcd.setCursor (1, 1); 
+    lcd.print (ChoixTempo);
+    lcd.print("h");
+    
   }
-
+  else if (page == 6)
+  {
+    lcd.setCursor (0, 0);
+    lcd.print (" Adresse ruche      ");
+    lcd.setCursor (1, 1);
+    lcd.print ("                    ");
+    lcd.setCursor (1, 1); 
+    lcd.print (ChoixAdresse);
+  }
 }
 
 
