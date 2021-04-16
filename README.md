@@ -201,3 +201,17 @@ Prochaine étapes :
 
 Mise en place connectivité(établire la trame voulue), gestion database, finaliser le low power, gestion de la synchronisation des ruches. 
 
+
+__Rapport du 12/04/2021__
+
+Correction et finalisation de la partie arduino, connectivité OK !
+Test et début d'intégration du LoRa dans la RPI
+
+Parties à terminer : 
+Lors de la capture d'une trame, la traiter et savegarder les données dans la base de données
+Effectuer des tests
+
+__Rapport du 14/04/2021__
+
+Intégration dans la RPI terminée, tests sur courte durée ok ! Projet "techniquement terminé", passages au tests dès que possibles sur longue durée
+Passage du programme python en __beta 1.0__
