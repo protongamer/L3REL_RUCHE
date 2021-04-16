@@ -8,11 +8,13 @@
 #ROUTINES PARAMETERS
 
 #skip boot sequence ?
-SKIP_BOOT_SEQUENCE = True 
+SKIP_BOOT_SEQUENCE = False 
 #How much connected hives you want for your network ?
 MAX_HIVE = 5 
+RF_FREQ = 868.0  #What frequency we use ? (868 MHz in French Baguette lol / 915 MHz in US for BIG BURGER !)
 
-dataFolder = "data/"
+
+dataFolder = "js/data/"
 
 
 
@@ -50,7 +52,7 @@ CFG_STRING_3 = "#WAN SERVER ADRESS (DEFAULT -> 0)\n"
 #WAN NETWORK
 
 SERVER_ADRESS = 0
-
+RF_FREQ = 868.0 #What frequency we use ? (868.0MHz French Baguette / 915.0MHz US Lol)
 
 #######################
 
@@ -109,7 +111,7 @@ def parseData(index_line):
             
             elif(state_chr == 4):
                 PARAM_H = PARAM_H + str(index_line[index_chr])
-    return (int(PARAM_R), float(PARAM_D), float(PARAM_T), int(PARAM_H))            
+    return (int(PARAM_R), float(PARAM_D), float(PARAM_T), float(PARAM_H))            
     
 
 

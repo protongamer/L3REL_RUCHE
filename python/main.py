@@ -1,11 +1,14 @@
 #Written by Enzo N. - 2021
 #That Code is OpenIoB (internet of bee)
-#Alpha v0.7
+#Beta v1.0
 
-import pygame, time, os, sys
+import pygame, time, os, sys, os.path
+import busio
+import board
+import adafruit_rfm9x
+from digitalio import DigitalInOut, Direction, Pull
 from pygame.locals import *
 from datetime import date
-
 from hive_core import *
 
 
@@ -34,8 +37,6 @@ cfgStr = file.readlines()
 file.close()
 
 #read CFG
-
-
 
 #an another god like tool
 for cfgSweep in range(len(cfgStr)):
@@ -68,7 +69,22 @@ for cfgSweep in range(len(cfgStr)):
         #print(cfgStr[cfgSweep]) #DEBUG
         
         
-        
+
+##############################################
+#Then setup the RFM95 board (Lora radio)
+
+#CS = DigitalInOut(board.D16) #Setup Chip Select pin Connected to Pin10 of the Dragino Shield
+#RESET = DigitalInOut(board.D12) #Setup Reset pin Connected to Pin9 of the Dragino Shield
+#spi = busio.SPI(board.SCK_1, MOSI = board.MOSI_1, MISO = board.MISO_1) #Use SPI1 here (We already use SPI0 for PITFT !)
+#rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RF_FREQ) #setup rfm9x structure to SPI1
+#rfm9x.tx_power = 23 #power send to 23dBm
+
+##############################################
+
+
+#os.putenv('SDL_FBDEV', '/dev/fb1')
+#os.putenv('SDL_MOUSEDRV', 'TLSIB')
+#os.putenv('SLD_MOUSEDEV', '/dev/input/touchscreen')
 
 
 #######################################################################################
@@ -158,12 +174,16 @@ def setGraph(coordinates, dataType, actualHive):
             ####################
             #DRAW WHEN NEEDED !
             if(bufferSweep > 0):
-                    pygame.draw.line(screen,GFX_COLOR_LINES, (old_x, old_y), (local_x+baseX, local_y+baseY))
+                    pygame.draw.line(screen,GFX_COLOR_LINES, (old_x, old_y), (int(local_x+baseX), int(local_y+baseY)))
                 
-            pygame.draw.circle(screen, GFX_COLOR_POINTS, (baseX+local_x, baseY+local_y), 2)
+            pygame.draw.circle(screen, GFX_COLOR_POINTS, (int(baseX+local_x), int(baseY+local_y)), 2)
     return localLastValue
         
     
+
+
+
+
 
 
 
@@ -210,6 +230,18 @@ dateData = [0]*MAX_HIVE
 
 synchronise_level = MAX_HIVE #used to sync hives
 
+counterTimer = 0
+
+
+############
+#RFM95 received packet --- at this moment it should be in this order : 
+
+#1 byte : adress
+#2 bytes : temperature
+#2 bytes : humidity
+
+#packet = None
+
 
 
 room = MAIN_ROOM
@@ -247,8 +279,8 @@ sys.stdout.write("\n")
 #    print(x)
 
 #init screen
-screen = pygame.display.set_mode([720,480])
-
+#screen = pygame.display.set_mode([720,480])
+screen = pygame.display.set_mode([720,480], FULLSCREEN)
 
 #################################################################
 #Load all of pics
@@ -280,18 +312,8 @@ mini_font = pygame.font.SysFont(None, 36)
 
 if (SKIP_BOOT_SEQUENCE == False):
 
-    #define a transparent rect for boot sequence
-    s = pygame.Surface((720,480))
-    s.set_alpha(255)
-    s.fill((0,0,0))
-
-    for x in range(255):
-        screen.blit(logo, (80,120))
-        screen.blit(s,(0,0))
-        s.set_alpha(255-x)
-        pygame.display.flip()
-        time.sleep(.005)
-
+    screen.blit(logo, (80,120))
+    pygame.display.flip()
     time.sleep(3)
 
 
@@ -312,14 +334,14 @@ day = today.strftime("%d")
 
 
 ##################################################
-#Load database 
+#Load database on boot
 
 tempStr = ""
 
-
-file = open(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", "r+")
-tempStr = file.readlines()
-file.close()
+if(os.path.exists(dataFolder + "Y" + str(year) + "M" + str(month) + ".txt")):
+	file = open(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", "r+")
+	tempStr = file.readlines()
+	file.close()
 
 
 
@@ -357,7 +379,10 @@ day = int(day) + convert(int(seconds), 0, 86400, 0.0, 1.0001)
 print(year, "  d(s):", seconds, "  d:", day)
 
 #write to database at destination
-databaseWrite(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", (3, day, 67, 67))
+#databaseWrite(dataFolder + "Y"+ str(year) + "M" + str(month) + ".txt", (3, day, 67, 67))
+
+
+
 
 
 
@@ -365,6 +390,25 @@ while loop == True:
 
     fillScreen((0,0,0))
     
+    ####################
+    #Let's read a packet now
+    #packet = None #always reset packet
+    #packet = rfm9x.receive()
+    #if(packet != None): #We get a packet
+	
+    #		if(len(packet) == 6): #check if we have 6 bytes
+    #			if(packet[0] == SERVER_ADRESS): #check if packet is sent to the server
+    #				print("ID : ", packet[1])
+    #				print("Temperature : ", packet[2] + (packet[3]/100))
+    #				print("Humidity : ", packet[4] + (packet[5]/100))
+    #				hour = time.strftime("%H", t)
+    #				minute = time.strftime("%M", t)
+    #				seconds = (int(hour)*3600) + (int(minute)*60)
+    #				day = int(day) + convert(int(seconds), 0, 86400, 0.0, 1.0001)
+    #				databaseWrite(dataFolder + "Y" + str(year) + "M" + str(month) + ".txt", (packet[1], day, packet[2] + (packet[3]/100), packet[4] + (packet[5]/100)))
+
+    #			if(len(packet) < 6):
+    #				print("Error reading !")
 
 
     if(room == CFG_ROOM):
@@ -461,6 +505,9 @@ while loop == True:
                     
             elif (synchronise_level <= MAX_HIVE): #sunc in progress
                 print(synchronise_level)
+                strAlertText = "Function not implemented yet !"
+                alertText = font.render(strAlertText, True, (255,127,0))
+                screen.blit(alertText, (90,100))
                 drawBar((240,200), convert(synchronise_level, 0, MAX_HIVE, 0, 200))
                 synchronise_level = synchronise_level + 1
                 time.sleep(0.05)
@@ -475,15 +522,16 @@ while loop == True:
     
         #get time
         t = time.localtime()
-        today = date.today();
-        day = today.strftime("%d/%m/%Y")
+        today = date.today()
+        text_day = today.strftime("%d/%m/%Y")
+        #text_day = str((mX, mY)) #debug
         current_time = time.strftime("%H:%M:%S",t)
     
         TitleRuche = "Ruche " + str(currentRuche)
         #StrTemp = str(tempData[currentRuche-1]) + "°C"
         #StrHum = str(humData[currentRuche-1]) + "%"
-        StrTemp = str(lastTemperature) + "°C"
-        StrHum = str(lastHumidity) + "%"
+        StrTemp = str(int(lastTemperature)) + "°C"
+        StrHum = str(int(lastHumidity)) + "%"
     
         ######################################################
         #Display part
@@ -506,7 +554,7 @@ while loop == True:
         displayRuche = font.render(TitleRuche, True, (255,255,255))
         screen.blit(displayRuche, (280, 55))
     
-        displayDay = font.render(day, True, (255,255,255))
+        displayDay = font.render(text_day, True, (255,255,255))
         screen.blit(displayDay, (20, 400))
     
         displayTime = font.render(current_time, True, (255,255,255))
@@ -568,6 +616,7 @@ while loop == True:
         #debug mouse 
     if (pygame.mouse.get_pressed() == (True,False,False)):
         (mX, mY) = pygame.mouse.get_pos()    
+        #pygame.draw.circle(screen, (255,255,0), (int(convert(mY, 0.0, 320.0, 0.0, 320.0))+50, int(convert(mX, 0.0, 480.0, 320.0, 0.0))+50), 5)
         print((mX, mY))
         
     
@@ -597,7 +646,20 @@ while loop == True:
         if event.type == pygame.QUIT:
             loop = False
     
-    time.sleep(0.015)
+    
+    counterTimer = counterTimer + 1
+    
+    if(counterTimer > 200):
+    	if(os.path.exists(dataFolder + "Y" + str(year) + "M" + str(month) + ".txt")):
+    		file = open(dataFolder + "Y" + str(year) + "M" + str(month) + ".txt", "r+")
+    		tempStr = file.readlines()
+    		file.close()
+    	counterTimer = 0
+
+
+
+
+    time.sleep(0.005)
     pygame.display.flip()
 
 
