@@ -215,3 +215,12 @@ __Rapport du 14/04/2021__
 
 Intégration dans la RPI terminée, tests sur courte durée ok ! Projet "techniquement terminé", passages au tests dès que possibles sur longue durée
 Passage du programme python en __beta 1.0__
+
+Note : Dans la RPI, penser à démarrer les 3 script python en même temps ! (Dans la configuration qu'est faite dans l'OS)
+
+Voir code ci-dessous :
+
+
+```sudo python3 main.py &
+sudo python3 rfm95.py
+sudo python3 -m http.server --directory js```
