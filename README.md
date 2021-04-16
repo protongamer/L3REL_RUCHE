@@ -221,6 +221,6 @@ Note : Dans la RPI, penser à démarrer les 3 script python en même temps ! (Da
 Voir code ci-dessous :
 
 
-```sudo python3 main.py &
-sudo python3 rfm95.py
-sudo python3 -m http.server --directory js```
+```sudo python3 main.py &```
+```sudo python3 rfm95.py```
+```sudo python3 -m http.server --directory js```
