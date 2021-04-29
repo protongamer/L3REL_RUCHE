@@ -25,7 +25,7 @@ int colorB = 0;
 #define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 
-int relay_pin = 8;
+
 
 int tab1 [4];
 int tab2 [4] = {0, 0, 0, 0};
