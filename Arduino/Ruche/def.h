@@ -8,7 +8,7 @@
 #define LED        13 //led
 #define BOUTON     6 //bouton
 #define DHTPIN     5 //capteur
-#define relay_pin      8
+#define relay_pin      8//relai
 
 /////////////////////////
 //encodeur
