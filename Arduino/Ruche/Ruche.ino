@@ -124,8 +124,8 @@ void setup()
   ///////////////////////////////////////////////////////////////////////////
   //lecture de l'EEPROM
 
-  ChoixTempo = EEPROM.read(Adr_ChoixTempo); // sauvegarde du choix de la tempo dans les paramètres
-  ChoixAdresse = EEPROM.read(Adr_ChoixAdresse); // sauvegarde du choix de l'adresse de la ruche dans les paramètres
+  ChoixTempo = EEPROM.read(Adr_ChoixTempo); // lecture sauvegarde du choix de la tempo dans les paramètres
+  ChoixAdresse = EEPROM.read(Adr_ChoixAdresse); // lecture sauvegarde du choix de l'adresse de la ruche dans les paramètres
   Serial.println(ChoixTempo);
   delay(5000);
 
