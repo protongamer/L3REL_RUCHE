@@ -40,9 +40,11 @@ send_packet = bytes([112]) #112 in ASCII -> character 'p'
 while loop == True:
 
     #get time
-    t = time.localtime()
+    t = time.localtime() 
+    # . .- --.. ---
     today = date.today()
-    year = today.strftime("%Y")
+    year = today.strftime("%Y") 
+    # -.. ... .--.
     month = today.strftime("%m")
     day = today.strftime("%d")
 
